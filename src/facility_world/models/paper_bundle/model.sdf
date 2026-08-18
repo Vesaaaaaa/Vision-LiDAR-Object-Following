@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<sdf version="1.8">
+  <model name="paper_bundle">
+    <static>false</static>
+    <link name="link">
+      <inertial>
+        <mass>1.5</mass>
+        <inertia>
+          <ixx>0.0156</ixx>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>0.0281</iyy>
+          <iyz>0.0</iyz>
+          <izz>0.0406</izz>
+        </inertia>
+      </inertial>
+
+      <!-- Main paper stack body -->
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.30 0.22 0.12</size>
+          </box>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.7</mu>
+              <mu2>0.6</mu2>
+            </ode>
+          </friction>
+          <contact>
+            <ode>
+              <kp>1e5</kp>
+              <kd>1.0</kd>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+
+      <!-- Paper stack body visual -->
+      <visual name="body_visual">
+        <geometry>
+          <box>
+            <size>0.30 0.22 0.12</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.95 0.92 0.82 1</ambient>
+          <diffuse>0.95 0.92 0.82 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+        </material>
+      </visual>
+
+      <!-- Binding strap horizontal -->
+      <visual name="strap_h_visual">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.32 0.02 0.13</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.2 0.4 0.8 1</ambient>
+          <diffuse>0.2 0.4 0.8 1</diffuse>
+          <specular>0.1 0.1 0.3 1</specular>
+        </material>
+      </visual>
+
+      <!-- Binding strap vertical -->
+      <visual name="strap_v_visual">
+        <pose>0 0 0 0 0 1.5708</pose>
+        <geometry>
+          <box>
+            <size>0.24 0.02 0.13</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.2 0.4 0.8 1</ambient>
+          <diffuse>0.2 0.4 0.8 1</diffuse>
+          <specular>0.1 0.1 0.3 1</specular>
+        </material>
+      </visual>
+
+      <!-- Page edge lines (top) -->
+      <visual name="pages_top_visual">
+        <pose>0 0 0.059 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.295 0.215 0.002</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.85 0.82 0.72 1</ambient>
+          <diffuse>0.85 0.82 0.72 1</diffuse>
+          <specular>0.02 0.02 0.02 1</specular>
+        </material>
+      </visual>
+
+      <!-- Page edge lines (front) -->
+      <visual name="pages_front_visual">
+        <pose>0 0.109 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.295 0.002 0.115</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.85 0.82 0.72 1</ambient>
+          <diffuse>0.85 0.82 0.72 1</diffuse>
+          <specular>0.02 0.02 0.02 1</specular>
+        </material>
+      </visual>
+
+    </link>
+  </model>
+</sdf>

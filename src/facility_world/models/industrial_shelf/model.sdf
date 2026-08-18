@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<sdf version="1.8">
+  <model name="industrial_shelf">
+    <static>true</static>
+    <link name="link">
+
+      <!-- Left vertical post -->
+      <visual name="post_left">
+        <pose>-0.58 0 0.9 0 0 0</pose>
+        <geometry><box><size>0.05 0.4 1.8</size></box></geometry>
+        <material>
+          <ambient>0.25 0.25 0.28 1</ambient>
+          <diffuse>0.35 0.35 0.4 1</diffuse>
+          <specular>0.4 0.4 0.45 1</specular>
+        </material>
+      </visual>
+      <collision name="post_left_col">
+        <pose>-0.58 0 0.9 0 0 0</pose>
+        <geometry><box><size>0.05 0.4 1.8</size></box></geometry>
+      </collision>
+
+      <!-- Right vertical post -->
+      <visual name="post_right">
+        <pose>0.58 0 0.9 0 0 0</pose>
+        <geometry><box><size>0.05 0.4 1.8</size></box></geometry>
+        <material>
+          <ambient>0.25 0.25 0.28 1</ambient>
+          <diffuse>0.35 0.35 0.4 1</diffuse>
+          <specular>0.4 0.4 0.45 1</specular>
+        </material>
+      </visual>
+      <collision name="post_right_col">
+        <pose>0.58 0 0.9 0 0 0</pose>
+        <geometry><box><size>0.05 0.4 1.8</size></box></geometry>
+      </collision>
+
+      <!-- Shelf 1 (bottom) -->
+      <visual name="shelf_1">
+        <pose>0 0 0.15 0 0 0</pose>
+        <geometry><box><size>1.2 0.4 0.03</size></box></geometry>
+        <material>
+          <ambient>0.5 0.4 0.3 1</ambient>
+          <diffuse>0.65 0.5 0.35 1</diffuse>
+        </material>
+      </visual>
+      <collision name="shelf_1_col">
+        <pose>0 0 0.15 0 0 0</pose>
+        <geometry><box><size>1.2 0.4 0.03</size></box></geometry>
+      </collision>
+
+      <!-- Shelf 2 -->
+      <visual name="shelf_2">
+        <pose>0 0 0.65 0 0 0</pose>
+        <geometry><box><size>1.2 0.4 0.03</size></box></geometry>
+        <material>
+          <ambient>0.5 0.4 0.3 1</ambient>
+          <diffuse>0.65 0.5 0.35 1</diffuse>
+        </material>
+      </visual>
+      <collision name="shelf_2_col">
+        <pose>0 0 0.65 0 0 0</pose>
+        <geometry><box><size>1.2 0.4 0.03</size></box></geometry>
+      </collision>
+
+      <!-- Shelf 3 -->
+      <visual name="shelf_3">
+        <pose>0 0 1.15 0 0 0</pose>
+        <geometry><box><size>1.2 0.4 0.03</size></box></geometry>
+        <material>
+          <ambient>0.5 0.4 0.3 1</ambient>
+          <diffuse>0.65 0.5 0.35 1</diffuse>
+        </material>
+      </visual>
+      <collision name="shelf_3_col">
+        <pose>0 0 1.15 0 0 0</pose>
+        <geometry><box><size>1.2 0.4 0.03</size></box></geometry>
+      </collision>
+
+      <!-- Shelf 4 (top) -->
+      <visual name="shelf_4">
+        <pose>0 0 1.65 0 0 0</pose>
+        <geometry><box><size>1.2 0.4 0.03</size></box></geometry>
+        <material>
+          <ambient>0.5 0.4 0.3 1</ambient>
+          <diffuse>0.65 0.5 0.35 1</diffuse>
+        </material>
+      </visual>
+      <collision name="shelf_4_col">
+        <pose>0 0 1.65 0 0 0</pose>
+        <geometry><box><size>1.2 0.4 0.03</size></box></geometry>
+      </collision>
+
+      <!-- Back cross brace -->
+      <visual name="back_brace">
+        <pose>0 -0.19 0.9 0 0 0</pose>
+        <geometry><box><size>1.16 0.02 1.75</size></box></geometry>
+        <material>
+          <ambient>0.25 0.25 0.28 1</ambient>
+          <diffuse>0.35 0.35 0.4 1</diffuse>
+        </material>
+      </visual>
+      <collision name="back_brace_col">
+        <pose>0 -0.19 0.9 0 0 0</pose>
+        <geometry><box><size>1.16 0.02 1.75</size></box></geometry>
+      </collision>
+
+      <!-- Inertial (static, but required) -->
+      <inertial>
+        <mass>30.0</mass>
+        <inertia>
+          <ixx>10.0</ixx><iyy>10.0</iyy><izz>5.0</izz>
+          <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
+        </inertia>
+      </inertial>
+
+    </link>
+  </model>
+</sdf>

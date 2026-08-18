@@ -1,0 +1,23 @@
+# Configuration parameters for obstacle_avoidance
+obstacle_avoidance_node:
+  ros__parameters:
+    scan_topic: "/scan"
+    input_cmd_vel_topic: "/odom/desired_cmd_vel"
+    output_cmd_vel_topic: "/diff_drive_controller/cmd_vel"
+    vision_target_detected_topic: "/odom/target_detected"
+    target_detected_timeout: 0.5
+    obstacle_distance: 0.6
+    clear_distance: 0.6
+    emergency_stop_distance: 0.2
+    front_half_width_deg: 20.0
+    front_side_half_width_deg: 25.0
+    avoid_linear_speed: 0.05
+    avoid_angular_speed: 1.0
+    avoid_clear_ticks: 15
+    search_angular_speed: 0.4
+    patrol_linear_speed: 0.7
+    patrol_angular_speed: 1.0
+    patrol_turn_interval_sec: 10.0
+    patrol_turn_duration_sec: 4.0
+    control_rate_hz: 20.0
+    cmd_vel_timeout: 0.5

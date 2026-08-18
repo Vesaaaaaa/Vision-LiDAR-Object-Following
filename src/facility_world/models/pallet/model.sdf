@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<sdf version="1.8">
+  <model name="pallet">
+    <static>true</static>
+    <link name="link">
+      <inertial>
+        <mass>20.0</mass>
+        <inertia>
+          <ixx>1.2</ixx><iyy>1.5</iyy><izz>2.5</izz>
+          <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
+        </inertia>
+      </inertial>
+
+      <!-- Top deck boards (7 planks along X) -->
+      <visual name="top_1"><pose>-0.55 0 0.13 0 0 0</pose><geometry><box><size>0.1 1.2 0.02</size></box></geometry><material><ambient>0.55 0.4 0.25 1</ambient><diffuse>0.6 0.45 0.3 1</diffuse></material></visual>
+      <visual name="top_2"><pose>-0.36 0 0.13 0 0 0</pose><geometry><box><size>0.1 1.2 0.02</size></box></geometry><material><ambient>0.55 0.4 0.25 1</ambient><diffuse>0.6 0.45 0.3 1</diffuse></material></visual>
+      <visual name="top_3"><pose>-0.18 0 0.13 0 0 0</pose><geometry><box><size>0.1 1.2 0.02</size></box></geometry><material><ambient>0.55 0.4 0.25 1</ambient><diffuse>0.6 0.45 0.3 1</diffuse></material></visual>
+      <visual name="top_4"><pose>0 0 0.13 0 0 0</pose><geometry><box><size>0.1 1.2 0.02</size></box></geometry><material><ambient>0.55 0.4 0.25 1</ambient><diffuse>0.6 0.45 0.3 1</diffuse></material></visual>
+      <visual name="top_5"><pose>0.18 0 0.13 0 0 0</pose><geometry><box><size>0.1 1.2 0.02</size></box></geometry><material><ambient>0.55 0.4 0.25 1</ambient><diffuse>0.6 0.45 0.3 1</diffuse></material></visual>
+      <visual name="top_6"><pose>0.36 0 0.13 0 0 0</pose><geometry><box><size>0.1 1.2 0.02</size></box></geometry><material><ambient>0.55 0.4 0.25 1</ambient><diffuse>0.6 0.45 0.3 1</diffuse></material></visual>
+      <visual name="top_7"><pose>0.55 0 0.13 0 0 0</pose><geometry><box><size>0.1 1.2 0.02</size></box></geometry><material><ambient>0.55 0.4 0.25 1</ambient><diffuse>0.6 0.45 0.3 1</diffuse></material></visual>
+
+      <!-- Cross stringers (3 blocks along Y) -->
+      <visual name="stringer_l"><pose>0 -0.5 0.07 0 0 0</pose><geometry><box><size>1.2 0.1 0.1</size></box></geometry><material><ambient>0.5 0.35 0.2 1</ambient><diffuse>0.55 0.4 0.25 1</diffuse></material></visual>
+      <visual name="stringer_c"><pose>0 0 0.07 0 0 0</pose><geometry><box><size>1.2 0.1 0.1</size></box></geometry><material><ambient>0.5 0.35 0.2 1</ambient><diffuse>0.55 0.4 0.25 1</diffuse></material></visual>
+      <visual name="stringer_r"><pose>0 0.5 0.07 0 0 0</pose><geometry><box><size>1.2 0.1 0.1</size></box></geometry><material><ambient>0.5 0.35 0.2 1</ambient><diffuse>0.55 0.4 0.25 1</diffuse></material></visual>
+
+      <!-- Bottom boards -->
+      <visual name="bot_1"><pose>-0.55 0 0.01 0 0 0</pose><geometry><box><size>0.1 1.2 0.02</size></box></geometry><material><ambient>0.5 0.35 0.2 1</ambient><diffuse>0.55 0.4 0.25 1</diffuse></material></visual>
+      <visual name="bot_2"><pose>0 0 0.01 0 0 0</pose><geometry><box><size>0.1 1.2 0.02</size></box></geometry><material><ambient>0.5 0.35 0.2 1</ambient><diffuse>0.55 0.4 0.25 1</diffuse></material></visual>
+      <visual name="bot_3"><pose>0.55 0 0.01 0 0 0</pose><geometry><box><size>0.1 1.2 0.02</size></box></geometry><material><ambient>0.5 0.35 0.2 1</ambient><diffuse>0.55 0.4 0.25 1</diffuse></material></visual>
+
+      <!-- Simplified collision: single box enclosing the pallet volume -->
+      <collision name="collision">
+        <pose>0 0 0.07 0 0 0</pose>
+        <geometry><box><size>1.2 1.2 0.14</size></box></geometry>
+        <surface><friction><ode><mu>0.9</mu><mu2>0.9</mu2></ode></friction></surface>
+      </collision>
+    </link>
+  </model>
+</sdf>

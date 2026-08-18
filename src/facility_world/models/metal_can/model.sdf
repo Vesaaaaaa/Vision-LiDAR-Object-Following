@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<sdf version="1.8">
+  <model name="metal_can">
+    <static>false</static>
+    <link name="link">
+      <inertial>
+        <mass>0.15</mass>
+        <inertia>
+          <!-- Cylinder: ixx=iyy=(m/12)*(3r²+h²), izz=(m/2)*r² -->
+          <!-- r=0.033, h=0.115, m=0.15 -->
+          <ixx>0.000228</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.000228</iyy>
+          <iyz>0</iyz>
+          <izz>0.000082</izz>
+        </inertia>
+      </inertial>
+
+      <!-- Collision: single cylinder for stable physics -->
+      <collision name="collision">
+        <pose>0 0 0.0575 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.033</radius>
+            <length>0.115</length>
+          </cylinder>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.6</mu>
+              <mu2>0.6</mu2>
+            </ode>
+          </friction>
+          <contact>
+            <ode>
+              <kp>1e5</kp>
+              <kd>1</kd>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+
+      <!-- Main can body -->
+      <visual name="body">
+        <pose>0 0 0.0575 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.033</radius>
+            <length>0.115</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.75 0.75 0.78 1</ambient>
+          <diffuse>0.80 0.80 0.82 1</diffuse>
+          <specular>0.9 0.9 0.9 1</specular>
+        </material>
+      </visual>
+
+      <!-- Top lid (slightly smaller radius, silver) -->
+      <visual name="top_lid">
+        <pose>0 0 0.1125 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.030</radius>
+            <length>0.005</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.85 0.85 0.87 1</ambient>
+          <diffuse>0.90 0.90 0.92 1</diffuse>
+          <specular>1.0 1.0 1.0 1</specular>
+        </material>
+      </visual>
+
+      <!-- Bottom base -->
+      <visual name="bottom_base">
+        <pose>0 0 0.003 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.030</radius>
+            <length>0.005</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.85 0.85 0.87 1</ambient>
+          <diffuse>0.90 0.90 0.92 1</diffuse>
+          <specular>1.0 1.0 1.0 1</specular>
+        </material>
+      </visual>
+
+      <!-- Label band (red — generic soda/beverage can) -->
+      <visual name="label">
+        <pose>0 0 0.055 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.0335</radius>
+            <length>0.065</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.80 0.10 0.10 1</ambient>
+          <diffuse>0.85 0.12 0.12 1</diffuse>
+          <specular>0.3 0.1 0.1 1</specular>
+        </material>
+      </visual>
+
+      <!-- Pull-tab ring (small box on top) -->
+      <visual name="pull_tab">
+        <pose>0.010 0 0.1165 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.012 0.006 0.003</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.70 0.70 0.72 1</ambient>
+          <diffuse>0.75 0.75 0.77 1</diffuse>
+          <specular>0.9 0.9 0.9 1</specular>
+        </material>
+      </visual>
+
+    </link>
+  </model>
+</sdf>

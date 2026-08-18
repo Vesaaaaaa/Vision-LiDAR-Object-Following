@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<sdf version="1.8">
+  <model name="plastic_bottle">
+    <static>false</static>
+    <link name="link">
+      <inertial>
+        <mass>0.05</mass>
+        <inertia>
+          <ixx>0.000025</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.000025</iyy>
+          <iyz>0</iyz>
+          <izz>0.000010</izz>
+        </inertia>
+      </inertial>
+
+      <!-- Main bottle body -->
+      <collision name="body_collision">
+        <pose>0 0 0.11 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.035</radius>
+            <length>0.18</length>
+          </cylinder>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.6</mu>
+              <mu2>0.6</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+
+      <!-- Bottle neck collision -->
+      <collision name="neck_collision">
+        <pose>0 0 0.215 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.015</radius>
+            <length>0.05</length>
+          </cylinder>
+        </geometry>
+      </collision>
+
+      <!-- Main bottle body visual -->
+      <visual name="body_visual">
+        <pose>0 0 0.11 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.035</radius>
+            <length>0.18</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.2 0.6 0.9 0.7</ambient>
+          <diffuse>0.2 0.6 0.9 0.7</diffuse>
+          <specular>0.8 0.8 0.8 1.0</specular>
+        </material>
+      </visual>
+
+      <!-- Bottle shoulder (taper) -->
+      <visual name="shoulder_visual">
+        <pose>0 0 0.205 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.025</radius>
+            <length>0.02</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.2 0.6 0.9 0.7</ambient>
+          <diffuse>0.2 0.6 0.9 0.7</diffuse>
+          <specular>0.8 0.8 0.8 1.0</specular>
+        </material>
+      </visual>
+
+      <!-- Bottle neck visual -->
+      <visual name="neck_visual">
+        <pose>0 0 0.225 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.015</radius>
+            <length>0.04</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.2 0.6 0.9 0.7</ambient>
+          <diffuse>0.2 0.6 0.9 0.7</diffuse>
+          <specular>0.8 0.8 0.8 1.0</specular>
+        </material>
+      </visual>
+
+      <!-- Bottle cap -->
+      <visual name="cap_visual">
+        <pose>0 0 0.25 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.017</radius>
+            <length>0.015</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.9 0.1 0.1 1.0</ambient>
+          <diffuse>0.9 0.1 0.1 1.0</diffuse>
+          <specular>0.3 0.3 0.3 1.0</specular>
+        </material>
+      </visual>
+
+      <!-- Label strip -->
+      <visual name="label_visual">
+        <pose>0 0 0.11 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.0355</radius>
+            <length>0.08</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.95 0.95 0.95 1.0</ambient>
+          <diffuse>0.95 0.95 0.95 1.0</diffuse>
+          <specular>0.1 0.1 0.1 1.0</specular>
+        </material>
+      </visual>
+
+      <!-- Bottom base -->
+      <visual name="base_visual">
+        <pose>0 0 0.01 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.033</radius>
+            <length>0.02</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.15 0.5 0.8 0.8</ambient>
+          <diffuse>0.15 0.5 0.8 0.8</diffuse>
+          <specular>0.5 0.5 0.5 1.0</specular>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+<sdf version="1.8">
+  <model name="work_table">
+    <static>true</static>
+    <link name="link">
+
+      <!-- Tabletop -->
+      <visual name="tabletop_visual">
+        <pose>0 0 0.75 0 0 0</pose>
+        <geometry>
+          <box><size>1.5 0.75 0.05</size></box>
+        </geometry>
+        <material>
+          <ambient>0.6 0.5 0.35 1</ambient>
+          <diffuse>0.65 0.55 0.4 1</diffuse>
+          <specular>0.1 0.1 0.1 1</specular>
+        </material>
+      </visual>
+      <collision name="tabletop_collision">
+        <pose>0 0 0.75 0 0 0</pose>
+        <geometry>
+          <box><size>1.5 0.75 0.05</size></box>
+        </geometry>
+      </collision>
+
+      <!-- Leg front-left -->
+      <visual name="leg_fl_visual">
+        <pose>-0.68 -0.32 0.36 0 0 0</pose>
+        <geometry>
+          <box><size>0.06 0.06 0.72</size></box>
+        </geometry>
+        <material>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.35 0.35 0.35 1</diffuse>
+        </material>
+      </visual>
+      <collision name="leg_fl_collision">
+        <pose>-0.68 -0.32 0.36 0 0 0</pose>
+        <geometry>
+          <box><size>0.06 0.06 0.72</size></box>
+        </geometry>
+      </collision>
+
+      <!-- Leg front-right -->
+      <visual name="leg_fr_visual">
+        <pose>0.68 -0.32 0.36 0 0 0</pose>
+        <geometry>
+          <box><size>0.06 0.06 0.72</size></box>
+        </geometry>
+        <material>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.35 0.35 0.35 1</diffuse>
+        </material>
+      </visual>
+      <collision name="leg_fr_collision">
+        <pose>0.68 -0.32 0.36 0 0 0</pose>
+        <geometry>
+          <box><size>0.06 0.06 0.72</size></box>
+        </geometry>
+      </collision>
+
+      <!-- Leg rear-left -->
+      <visual name="leg_rl_visual">
+        <pose>-0.68 0.32 0.36 0 0 0</pose>
+        <geometry>
+          <box><size>0.06 0.06 0.72</size></box>
+        </geometry>
+        <material>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.35 0.35 0.35 1</diffuse>
+        </material>
+      </visual>
+      <collision name="leg_rl_collision">
+        <pose>-0.68 0.32 0.36 0 0 0</pose>
+        <geometry>
+          <box><size>0.06 0.06 0.72</size></box>
+        </geometry>
+      </collision>
+
+      <!-- Leg rear-right -->
+      <visual name="leg_rr_visual">
+        <pose>0.68 0.32 0.36 0 0 0</pose>
+        <geometry>
+          <box><size>0.06 0.06 0.72</size></box>
+        </geometry>
+        <material>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.35 0.35 0.35 1</diffuse>
+        </material>
+      </visual>
+      <collision name="leg_rr_collision">
+        <pose>0.68 0.32 0.36 0 0 0</pose>
+        <geometry>
+          <box><size>0.06 0.06 0.72</size></box>
+        </geometry>
+      </collision>
+
+      <!-- Lower shelf -->
+      <visual name="lower_shelf_visual">
+        <pose>0 0 0.35 0 0 0</pose>
+        <geometry>
+          <box><size>1.38 0.63 0.03</size></box>
+        </geometry>
+        <material>
+          <ambient>0.55 0.45 0.3 1</ambient>
+          <diffuse>0.6 0.5 0.35 1</diffuse>
+        </material>
+      </visual>
+      <collision name="lower_shelf_collision">
+        <pose>0 0 0.35 0 0 0</pose>
+        <geometry>
+          <box><size>1.38 0.63 0.03</size></box>
+        </geometry>
+      </collision>
+
+      <!-- Front cross-brace -->
+      <visual name="brace_front_visual">
+        <pose>0 -0.32 0.18 0 0 0</pose>
+        <geometry>
+          <box><size>1.38 0.04 0.04</size></box>
+        </geometry>
+        <material>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.35 0.35 0.35 1</diffuse>
+        </material>
+      </visual>
+
+      <!-- Rear cross-brace -->
+      <visual name="brace_rear_visual">
+        <pose>0 0.32 0.18 0 0 0</pose>
+        <geometry>
+          <box><size>1.38 0.04 0.04</size></box>
+        </geometry>
+        <material>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.35 0.35 0.35 1</diffuse>
+        </material>
+      </visual>
+
+    </link>
+  </model>
+</sdf>

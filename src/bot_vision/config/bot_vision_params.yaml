@@ -1,0 +1,51 @@
+# Shared parameters for the bot_vision pipeline nodes.
+# Topic names match what obstacle_avoidance_node expects:
+#   /odom/desired_cmd_vel  (TwistStamped from follow_controller)
+#   /odom/target_detected  (Bool from tracker_node)
+
+yolo_detector:
+  ros__parameters:
+    camera_topic: "/following_bot/camera/rgb"
+    detections_topic: "/bot_vision/detections"
+    detected_classes_topic: "/bot_vision/detected_classes"
+    model_path: "yolov8n.pt"
+    confidence_threshold: 0.4
+    rate_hz: 30.0
+
+target_selector:
+  ros__parameters:
+    detections_topic: "/bot_vision/detections"
+    target_class: "bottle"
+    selection_mode: "class_and_proximity"
+    min_confidence: 0.5
+    selected_detection_topic: "/bot_vision/selected_detection"
+    selected_target_id_topic: "/bot_vision/target_id"
+
+tracker_node:
+  ros__parameters:
+    camera_topic: "/following_bot/camera/rgb"
+    selected_detection_topic: "/bot_vision/selected_detection"
+    target_id_topic: "/bot_vision/target_id"
+    bearing_distance_topic: "bot_vision/target_bearing_distance"
+    target_detected_topic: "/odom/target_detected"
+    camera_hfov_rad: 1.047
+    known_object_width_m: 0.15
+    reacquire_iou_threshold: 0.3
+    tracker_type: "KCF"
+    control_rate_hz: 30.0
+
+follow_controller:
+  ros__parameters:
+    bearing_distance_topic: "bot_vision/target_bearing_distance"
+    target_detected_topic: "/odom/target_detected"
+    output_cmd_vel_topic: "/odom/desired_cmd_vel"
+    frame_id: "base_link"
+    control_rate_hz: 30.0
+    desired_distance: 1.0
+    linear_gain: 0.6
+    angular_gain: 1.8
+    max_linear_speed: 0.5
+    max_angular_speed: 1.5
+    distance_deadband: 0.1
+    bearing_deadband: 0.02
+    target_timeout_sec: 0.5

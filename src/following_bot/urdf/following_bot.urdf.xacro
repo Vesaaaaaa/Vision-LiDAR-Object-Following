@@ -1,0 +1,259 @@
+<?xml version="1.0"?>
+<robot name="following_bot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:property name="disc_radius" value="0.17"/>
+  <xacro:property name="disc_height" value="0.09"/>
+  <xacro:property name="disc_mass" value="3.0"/>
+  <xacro:property name="wheel_radius" value="0.05"/>
+  <xacro:property name="wheel_width" value="0.02"/>
+  <xacro:property name="wheel_mass" value="0.15"/>
+  <xacro:property name="wheel_separation" value="0.28"/>
+  <xacro:property name="caster_radius" value="0.025"/>
+  <xacro:property name="lidar_radius" value="0.03"/>
+  <xacro:property name="lidar_height" value="0.04"/>
+  <xacro:property name="camera_mount_z_offset" value="0.03"/>
+
+  <material name="bot_body_gray">
+    <color rgba="0.15 0.15 0.15 1.0"/>
+  </material>
+  <material name="bot_bumper_black">
+    <color rgba="0.05 0.05 0.05 1.0"/>
+  </material>
+  <material name="bot_wheel_black">
+    <color rgba="0.08 0.08 0.08 1.0"/>
+  </material>
+  <material name="camera_link_dark_material">
+    <color rgba="0.05 0.05 0.05 1.0"/>
+  </material>
+
+  <link name="base_footprint"/>
+
+  <joint name="base_footprint_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 ${wheel_radius + disc_height/2}" rpy="0 0 0"/>
+  </joint>
+
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="${disc_radius}" length="${disc_height}"/>
+      </geometry>
+      <material name="bot_body_gray"/>
+    </visual>
+    <visual>
+      <origin xyz="0 0 ${-disc_height/2 + 0.01}" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="${disc_radius - 0.005}" length="0.015"/>
+      </geometry>
+      <material name="bot_bumper_black"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="${disc_radius}" length="${disc_height}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${disc_mass}"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="${(disc_mass/12.0)*(3*disc_radius*disc_radius + disc_height*disc_height)}"
+               iyy="${(disc_mass/12.0)*(3*disc_radius*disc_radius + disc_height*disc_height)}"
+               izz="${(disc_mass/2.0)*disc_radius*disc_radius}"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <gazebo reference="base_link">
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+
+  <xacro:macro name="drive_wheel" params="name y_sign">
+    <link name="${name}_wheel">
+      <visual>
+        <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+        </geometry>
+        <material name="bot_wheel_black"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="${wheel_mass}"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="${(wheel_mass/12.0)*(3*wheel_radius*wheel_radius + wheel_width*wheel_width)}"
+                 iyy="${(wheel_mass/12.0)*(3*wheel_radius*wheel_radius + wheel_width*wheel_width)}"
+                 izz="${(wheel_mass/2.0)*wheel_radius*wheel_radius}"
+                 ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+    </link>
+    <joint name="${name}_wheel_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="${name}_wheel"/>
+      <origin xyz="0.06 ${y_sign*wheel_separation/2} ${-disc_height/2}" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <dynamics damping="0.1" friction="0.05"/>
+    </joint>
+    <gazebo reference="${name}_wheel">
+      <material>Gazebo/Black</material>
+      <mu1>1.2</mu1>
+      <mu2>1.2</mu2>
+    </gazebo>
+  </xacro:macro>
+
+  <xacro:drive_wheel name="left" y_sign="1"/>
+  <xacro:drive_wheel name="right" y_sign="-1"/>
+
+  <link name="caster_wheel">
+    <visual>
+      <geometry>
+        <sphere radius="${caster_radius}"/>
+      </geometry>
+      <material name="bot_wheel_black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <sphere radius="${caster_radius}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.00001" iyy="0.00001" izz="0.00001" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="caster_wheel_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="caster_wheel"/>
+    <origin xyz="${-(disc_radius - caster_radius - 0.02)} 0 ${caster_radius - (wheel_radius + disc_height/2)}" rpy="0 0 0"/>
+  </joint>
+  <gazebo reference="caster_wheel">
+    <material>Gazebo/Black</material>
+    <mu1>0.001</mu1>
+    <mu2>0.001</mu2>
+  </gazebo>
+
+  <link name="lidar_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="${lidar_radius}" length="${lidar_height}"/>
+      </geometry>
+      <material name="bot_bumper_black"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="${lidar_radius}" length="${lidar_height}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.00002" iyy="0.00002" izz="0.00002" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="lidar_link"/>
+    <origin xyz="0 0 ${disc_height/2 + lidar_height/2}" rpy="0 0 0"/>
+  </joint>
+  <gazebo reference="lidar_link">
+    <sensor name="lidar_sensor" type="gpu_lidar">
+      <always_on>true</always_on>
+      <update_rate>10</update_rate>
+      <topic>scan</topic>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>360</samples>
+            <min_angle>-3.14159</min_angle>
+            <max_angle>3.14159</max_angle>
+          </horizontal>
+          <vertical>
+            <samples>1</samples>
+          </vertical>
+        </scan>
+        <range>
+          <min>0.12</min>
+          <max>10.0</max>
+          <resolution>0.01</resolution>
+        </range>
+      </ray>
+    </sensor>
+  </gazebo>
+
+  <link name="camera_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.02 0.03 0.02"/>
+      </geometry>
+      <material name="camera_link_dark_material"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.02 0.03 0.02"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.02"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.000001" iyy="0.000001" izz="0.000001" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+  <joint name="camera_joint" type="fixed">
+    <parent link="lidar_link"/>
+    <child link="camera_link"/>
+    <origin xyz="0 0 ${camera_mount_z_offset}" rpy="0 0 0"/>
+  </joint>
+  <gazebo reference="camera_link">
+    <sensor name="camera_sensor" type="camera">
+      <always_on>true</always_on>
+      <update_rate>30</update_rate>
+      <topic>/following_bot/camera/rgb</topic>
+      <camera>
+        <horizontal_fov>1.047</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.05</near>
+          <far>20</far>
+        </clip>
+      </camera>
+    </sensor>
+  </gazebo>
+
+  <ros2_control name="following_bot_system" type="system">
+    <hardware>
+      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+    </hardware>
+    <joint name="left_wheel_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="right_wheel_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+
+  <gazebo>
+    <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+      <parameters>$(find following_bot)/config/following_bot_controllers.yaml</parameters>
+    </plugin>
+  </gazebo>
+
+</robot>

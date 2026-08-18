@@ -1,0 +1,637 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <world name="facility">
+
+    <!-- Physics -->
+    <gravity>0 0 -9.81</gravity>
+    <physics name="default_physics" type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <ode>
+        <solver>
+          <type>quick</type>
+          <iters>50</iters>
+        </solver>
+      </ode>
+    </physics>
+
+    <!-- Required simulation plugins -->
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin filename="gz-sim-contact-system" name="gz::sim::systems::Contact"/>
+
+    <!-- Scene ambient / background -->
+    <scene>
+      <ambient>0.5 0.5 0.5 1</ambient>
+      <background>0.7 0.8 0.9 1</background>
+      <shadows>true</shadows>
+    </scene>
+
+    <!-- Sun (directional light) -->
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 15 0 0 0</pose>
+      <diffuse>0.9 0.9 0.9 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <direction>-0.4 0.2 -0.9</direction>
+    </light>
+
+    <!-- Interior fill lights so the indoor facility is not dim -->
+    <light type="point" name="ceiling_light_1">
+      <pose>-6 -3 3.5 0 0 0</pose>
+      <diffuse>0.7 0.7 0.65 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>10</range>
+        <linear>0.1</linear>
+        <constant>0.4</constant>
+        <quadratic>0.01</quadratic>
+      </attenuation>
+    </light>
+    <light type="point" name="ceiling_light_2">
+      <pose>6 -3 3.5 0 0 0</pose>
+      <diffuse>0.7 0.7 0.65 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>10</range>
+        <linear>0.1</linear>
+        <constant>0.4</constant>
+        <quadratic>0.01</quadratic>
+      </attenuation>
+    </light>
+    <light type="point" name="ceiling_light_3">
+      <pose>0 5 3.5 0 0 0</pose>
+      <diffuse>0.7 0.7 0.65 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>10</range>
+        <linear>0.1</linear>
+        <constant>0.4</constant>
+        <quadratic>0.01</quadratic>
+      </attenuation>
+    </light>
+
+    <!-- Ground plane (concrete floor) -->
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>0.9</mu>
+                <mu2>0.9</mu2>
+              </ode>
+            </friction>
+          </surface>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.55 0.55 0.55 1</ambient>
+            <diffuse>0.6 0.6 0.6 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Outer perimeter walls -->
+    <model name="wall_north">
+      <static>true</static>
+      <pose>0 8 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>20.2 0.2 3.0</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>20.2 0.2 3.0</size></box></geometry>
+          <material><ambient>0.85 0.83 0.78 1</ambient><diffuse>0.9 0.88 0.82 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="wall_south">
+      <static>true</static>
+      <pose>0 -8 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>20.2 0.2 3.0</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>20.2 0.2 3.0</size></box></geometry>
+          <material><ambient>0.85 0.83 0.78 1</ambient><diffuse>0.9 0.88 0.82 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="wall_east">
+      <static>true</static>
+      <pose>10 0 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.2 16.0 3.0</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>0.2 16.0 3.0</size></box></geometry>
+          <material><ambient>0.85 0.83 0.78 1</ambient><diffuse>0.9 0.88 0.82 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="wall_west">
+      <static>true</static>
+      <pose>-10 0 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.2 16.0 3.0</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>0.2 16.0 3.0</size></box></geometry>
+          <material><ambient>0.85 0.83 0.78 1</ambient><diffuse>0.9 0.88 0.82 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Interior wall: divides NW from NE room -->
+    <model name="wall_interior_north">
+      <static>true</static>
+      <pose>0 4.6 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.2 6.8 3.0</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>0.2 6.8 3.0</size></box></geometry>
+          <material><ambient>0.85 0.83 0.78 1</ambient><diffuse>0.9 0.88 0.82 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Interior wall: divides SW from SE room -->
+    <model name="wall_interior_south">
+      <static>true</static>
+      <pose>0 -4.6 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.2 6.8 3.0</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>0.2 6.8 3.0</size></box></geometry>
+          <material><ambient>0.85 0.83 0.78 1</ambient><diffuse>0.9 0.88 0.82 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Hallway walls with doorway gaps -->
+    <model name="wall_hallway_nw_a">
+      <static>true</static>
+      <pose>-6.5 1.2 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>7.0 0.2 3.0</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>7.0 0.2 3.0</size></box></geometry>
+          <material><ambient>0.85 0.83 0.78 1</ambient><diffuse>0.9 0.88 0.82 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="wall_hallway_nw_b">
+      <static>true</static>
+      <pose>-0.5 1.2 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>3.0 0.2 3.0</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>3.0 0.2 3.0</size></box></geometry>
+          <material><ambient>0.85 0.83 0.78 1</ambient><diffuse>0.9 0.88 0.82 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="wall_hallway_ne_a">
+      <static>true</static>
+      <pose>0.5 1.2 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>3.0 0.2 3.0</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>3.0 0.2 3.0</size></box></geometry>
+          <material><ambient>0.85 0.83 0.78 1</ambient><diffuse>0.9 0.88 0.82 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="wall_hallway_ne_b">
+      <static>true</static>
+      <pose>6.5 1.2 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>7.0 0.2 3.0</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>7.0 0.2 3.0</size></box></geometry>
+          <material><ambient>0.85 0.83 0.78 1</ambient><diffuse>0.9 0.88 0.82 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="wall_hallway_sw_a">
+      <static>true</static>
+      <pose>-6.5 -1.2 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>7.0 0.2 3.0</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>7.0 0.2 3.0</size></box></geometry>
+          <material><ambient>0.85 0.83 0.78 1</ambient><diffuse>0.9 0.88 0.82 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="wall_hallway_sw_b">
+      <static>true</static>
+      <pose>-0.5 -1.2 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>3.0 0.2 3.0</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>3.0 0.2 3.0</size></box></geometry>
+          <material><ambient>0.85 0.83 0.78 1</ambient><diffuse>0.9 0.88 0.82 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="wall_hallway_se_a">
+      <static>true</static>
+      <pose>0.5 -1.2 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>3.0 0.2 3.0</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>3.0 0.2 3.0</size></box></geometry>
+          <material><ambient>0.85 0.83 0.78 1</ambient><diffuse>0.9 0.88 0.82 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="wall_hallway_se_b">
+      <static>true</static>
+      <pose>6.5 -1.2 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>7.0 0.2 3.0</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>7.0 0.2 3.0</size></box></geometry>
+          <material><ambient>0.85 0.83 0.78 1</ambient><diffuse>0.9 0.88 0.82 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Industrial shelves: NE storage room + SW processing bay -->
+    <include>
+      <name>shelf_ne_1</name>
+      <pose>9.3 3.0 0 0 0 1.5708</pose>
+      <uri>model://industrial_shelf</uri>
+    </include>
+    <include>
+      <name>shelf_ne_2</name>
+      <pose>9.3 5.0 0 0 0 1.5708</pose>
+      <uri>model://industrial_shelf</uri>
+    </include>
+    <include>
+      <name>shelf_ne_3</name>
+      <pose>9.3 7.0 0 0 0 1.5708</pose>
+      <uri>model://industrial_shelf</uri>
+    </include>
+    <include>
+      <name>shelf_ne_4</name>
+      <pose>3.0 7.4 0 0 0 3.1416</pose>
+      <uri>model://industrial_shelf</uri>
+    </include>
+    <include>
+      <name>shelf_sw_1</name>
+      <pose>-9.3 -3.5 0 0 0 -1.5708</pose>
+      <uri>model://industrial_shelf</uri>
+    </include>
+    <include>
+      <name>shelf_sw_2</name>
+      <pose>-9.3 -6.5 0 0 0 -1.5708</pose>
+      <uri>model://industrial_shelf</uri>
+    </include>
+
+    <!-- Pallets: storage room + loading dock -->
+    <include>
+      <name>pallet_storage_1</name>
+      <pose>3.5 6.5 0.075 0 0 0</pose>
+      <uri>model://pallet</uri>
+    </include>
+    <include>
+      <name>pallet_storage_2</name>
+      <pose>5.2 6.5 0.075 0 0 0</pose>
+      <uri>model://pallet</uri>
+    </include>
+    <include>
+      <name>pallet_storage_3</name>
+      <pose>7.0 6.5 0.075 0 0 1.5708</pose>
+      <uri>model://pallet</uri>
+    </include>
+    <include>
+      <name>pallet_dock_1</name>
+      <pose>3.8 -6.8 0.075 0 0 0</pose>
+      <uri>model://pallet</uri>
+    </include>
+    <include>
+      <name>pallet_dock_2</name>
+      <pose>5.6 -6.8 0.075 0 0 0</pose>
+      <uri>model://pallet</uri>
+    </include>
+    <include>
+      <name>pallet_dock_3</name>
+      <pose>7.4 -6.8 0.075 0 0 0</pose>
+      <uri>model://pallet</uri>
+    </include>
+
+    <!-- Work tables: sorting stations (NW) + processing bay (SW) -->
+    <include>
+      <name>work_table_sorting_1</name>
+      <pose>-6.5 3.0 0 0 0 0</pose>
+      <uri>model://work_table</uri>
+    </include>
+    <include>
+      <name>work_table_sorting_2</name>
+      <pose>-3.5 3.0 0 0 0 0</pose>
+      <uri>model://work_table</uri>
+    </include>
+    <include>
+      <name>work_table_processing_1</name>
+      <pose>-6.5 -3.0 0 0 0 0</pose>
+      <uri>model://work_table</uri>
+    </include>
+    <include>
+      <name>work_table_processing_2</name>
+      <pose>-3.5 -3.0 0 0 0 0</pose>
+      <uri>model://work_table</uri>
+    </include>
+
+    <!-- Recycling bins: sorting room (NW) set -->
+    <include>
+      <name>plastic_bin_sorting</name>
+      <pose>-9.0 6.5 0 0 0 0</pose>
+      <uri>model://plastic_bin</uri>
+    </include>
+    <include>
+      <name>paper_bin_sorting</name>
+      <pose>-9.0 5.3 0 0 0 0</pose>
+      <uri>model://paper_bin</uri>
+    </include>
+    <include>
+      <name>metal_bin_sorting</name>
+      <pose>-9.0 4.1 0 0 0 0</pose>
+      <uri>model://metal_bin</uri>
+    </include>
+    <include>
+      <name>glass_bin_sorting</name>
+      <pose>-9.0 2.9 0 0 0 0</pose>
+      <uri>model://glass_bin</uri>
+    </include>
+
+    <!-- Recycling bins: loading dock (SE) set -->
+    <include>
+      <name>plastic_bin_dock</name>
+      <pose>9.0 -2.5 0 0 0 3.14159</pose>
+      <uri>model://plastic_bin</uri>
+    </include>
+    <include>
+      <name>paper_bin_dock</name>
+      <pose>9.0 -3.7 0 0 0 3.14159</pose>
+      <uri>model://paper_bin</uri>
+    </include>
+    <include>
+      <name>metal_bin_dock</name>
+      <pose>9.0 -4.9 0 0 0 3.14159</pose>
+      <uri>model://metal_bin</uri>
+    </include>
+    <include>
+      <name>glass_bin_dock</name>
+      <pose>9.0 -6.1 0 0 0 3.14159</pose>
+      <uri>model://glass_bin</uri>
+    </include>
+
+    <!-- ============================================================
+         STATIC OBSTACLES: cardboard boxes, crates, and misc barriers
+         to enrich the environment.
+         ============================================================ -->
+    <model name="box_stack_1">
+      <static>true</static>
+      <pose>4.5 4.5 0.4 0 0 0.3</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.6 0.5 0.8</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>0.6 0.5 0.8</size></box></geometry>
+          <material><ambient>0.55 0.4 0.25 1</ambient><diffuse>0.65 0.48 0.3 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="box_stack_2">
+      <static>true</static>
+      <pose>6.2 4.5 0.3 0 0 -0.2</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.5 0.5 0.6</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>0.5 0.5 0.6</size></box></geometry>
+          <material><ambient>0.55 0.4 0.25 1</ambient><diffuse>0.65 0.48 0.3 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="box_stack_3">
+      <static>true</static>
+      <pose>-4.0 -6.5 0.35 0 0 0.15</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.55 0.55 0.7</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>0.55 0.55 0.7</size></box></geometry>
+          <material><ambient>0.55 0.4 0.25 1</ambient><diffuse>0.65 0.48 0.3 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="traffic_cone_1">
+      <static>true</static>
+      <pose>-2.5 0 0.2 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><cylinder><radius>0.15</radius><length>0.4</length></cylinder></geometry></collision>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.15</radius><length>0.4</length></cylinder></geometry>
+          <material><ambient>0.9 0.35 0.05 1</ambient><diffuse>1.0 0.4 0.1 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="traffic_cone_2">
+      <static>true</static>
+      <pose>2.5 0 0.2 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><cylinder><radius>0.15</radius><length>0.4</length></cylinder></geometry></collision>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.15</radius><length>0.4</length></cylinder></geometry>
+          <material><ambient>0.9 0.35 0.05 1</ambient><diffuse>1.0 0.4 0.1 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="support_pillar_1">
+      <static>true</static>
+      <pose>-5 0 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><cylinder><radius>0.2</radius><length>3.0</length></cylinder></geometry></collision>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.2</radius><length>3.0</length></cylinder></geometry>
+          <material><ambient>0.4 0.4 0.42 1</ambient><diffuse>0.5 0.5 0.52 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="support_pillar_2">
+      <static>true</static>
+      <pose>5 0 1.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><cylinder><radius>0.2</radius><length>3.0</length></cylinder></geometry></collision>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.2</radius><length>3.0</length></cylinder></geometry>
+          <material><ambient>0.4 0.4 0.42 1</ambient><diffuse>0.5 0.5 0.52 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ============================================================
+         RANDOMLY SCATTERED RECYCLABLE WASTE~~!!
+         ============================================================ -->
+
+    <!-- Plastic bottles -->
+    <include>
+      <name>plastic_bottle_1</name>
+      <pose>-7.3 2.85 0.12 0 0 0.5</pose>
+      <uri>model://plastic_bottle</uri>
+    </include>
+    <include>
+      <name>plastic_bottle_2</name>
+      <pose>-4.1 5.6 0.12 0 0 1.2</pose>
+      <uri>model://plastic_bottle</uri>
+    </include>
+    <include>
+      <name>plastic_bottle_3</name>
+      <pose>-2.2 6.8 0.12 0 0 -0.3</pose>
+      <uri>model://plastic_bottle</uri>
+    </include>
+    <include>
+      <name>plastic_bottle_4</name>
+      <pose>1.8 -0.3 0.12 0 0 2.1</pose>
+      <uri>model://plastic_bottle</uri>
+    </include>
+    <include>
+      <name>plastic_bottle_5</name>
+      <pose>6.8 -3.4 0.12 0 0 0.8</pose>
+      <uri>model://plastic_bottle</uri>
+    </include>
+
+    <!-- Paper bundles -->
+    <include>
+      <name>paper_bundle_1</name>
+      <pose>-6.5 3.0 0.95 0 0 0.1</pose>
+      <uri>model://paper_bundle</uri>
+    </include>
+    <include>
+      <name>paper_bundle_2</name>
+      <pose>-3.5 3.0 0.95 0 0 -0.4</pose>
+      <uri>model://paper_bundle</uri>
+    </include>
+    <include>
+      <name>paper_bundle_3</name>
+      <pose>-5.2 6.3 0.08 0 0 0.9</pose>
+      <uri>model://paper_bundle</uri>
+    </include>
+    <include>
+      <name>paper_bundle_4</name>
+      <pose>3.5 6.5 0.18 0 0 0.0</pose>
+      <uri>model://paper_bundle</uri>
+    </include>
+
+    <!-- Metal cans -->
+    <include>
+      <name>metal_can_1</name>
+      <pose>-8.2 4.7 0.06 0 0 0.6</pose>
+      <uri>model://metal_can</uri>
+    </include>
+    <include>
+      <name>metal_can_2</name>
+      <pose>-3.8 2.4 0.06 0 0 -1.1</pose>
+      <uri>model://metal_can</uri>
+    </include>
+    <include>
+      <name>metal_can_3</name>
+      <pose>0.3 0.4 0.06 0 0 1.9</pose>
+      <uri>model://metal_can</uri>
+    </include>
+    <include>
+      <name>metal_can_4</name>
+      <pose>4.7 -4.6 0.06 0 0 0.3</pose>
+      <uri>model://metal_can</uri>
+    </include>
+    <include>
+      <name>metal_can_5</name>
+      <pose>7.9 -5.8 0.06 0 0 -0.7</pose>
+      <uri>model://metal_can</uri>
+    </include>
+
+    <!-- Glass bottles -->
+    <include>
+      <name>glass_bottle_1</name>
+      <pose>-7.8 6.0 0.13 0 0 0.4</pose>
+      <uri>model://glass_bottle</uri>
+    </include>
+    <include>
+      <name>glass_bottle_2</name>
+      <pose>-4.8 -2.6 0.13 0 0 -0.5</pose>
+      <uri>model://glass_bottle</uri>
+    </include>
+    <include>
+      <name>glass_bottle_3</name>
+      <pose>-3.0 -6.2 0.13 0 0 1.4</pose>
+      <uri>model://glass_bottle</uri>
+    </include>
+    <include>
+      <name>glass_bottle_4</name>
+      <pose>5.9 -2.2 0.13 0 0 0.2</pose>
+      <uri>model://glass_bottle</uri>
+    </include>
+    <include>
+      <name>glass_bottle_5</name>
+      <pose>8.4 -3.9 0.13 0 0 -1.6</pose>
+      <uri>model://glass_bottle</uri>
+    </include>
+
+
+    <model name="render_confirm_cam">
+      <static>true</static>
+      <pose>3 0 2 0 0.34 3.14159</pose>
+      <link name="link">
+        <sensor type="camera" name="render_confirm_camera">
+          <topic>/render_confirm/camera</topic>
+          <always_on>1</always_on>
+          <update_rate>30</update_rate>
+          <camera>
+            <horizontal_fov>1.0472</horizontal_fov>
+            <image>
+              <width>800</width>
+              <height>600</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.05</near>
+              <far>100</far>
+            </clip>
+          </camera>
+        </sensor>
+      </link>
+    </model>
+</world>
+</sdf>
