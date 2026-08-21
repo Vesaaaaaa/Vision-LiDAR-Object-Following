@@ -15,7 +15,7 @@ yolo_detector:
 target_selector:
   ros__parameters:
     detections_topic: "/bot_vision/detections"
-    target_class: "bottle"
+    target_class: "person"
     selection_mode: "class_and_proximity"
     min_confidence: 0.5
     selected_detection_topic: "/bot_vision/selected_detection"

@@ -93,6 +93,10 @@ class ObstacleAvoidanceNode(Node):
         self.patrol_turn_duration_sec = float(p('patrol_turn_duration_sec').value)
 
         self.cmd_vel_timeout = float(p('cmd_vel_timeout').value)
+        
+        self._search_spin_duration = (4.0 * math.pi / self.search_angular_speed
+                              if self.search_angular_speed > 0 else float('inf'))
+        self._search_start_time = None
 
         # --- State ---
         # PATROL is the initial state. The robot patrols autonomously
@@ -157,8 +161,6 @@ class ObstacleAvoidanceNode(Node):
         self.have_input_cmd = True
 
     def target_detected_callback(self, msg: Bool):
-        """NOT YET IMPLEMENTED upstream: records the latest vision target
-        detection flag. See subscription setup for interface caveats."""
         self.target_detected = bool(msg.data)
         self.last_target_detected_time = self.get_clock().now()
         self.have_target_msg = True
@@ -252,6 +254,7 @@ class ObstacleAvoidanceNode(Node):
         if self.state == SafetyState.TRACK:
             if not self.is_target_detected():
                 self.state = SafetyState.SEARCH
+                self._search_start_time = self.get_clock().now()
                 self.get_logger().info('Target lost -> SEARCH')
                 # Fall through to SEARCH handling below.
             else:
@@ -261,9 +264,18 @@ class ObstacleAvoidanceNode(Node):
         if self.state == SafetyState.SEARCH:
             if self.is_target_detected():
                 self.state = SafetyState.TRACK
+                self._search_start_time = None
                 self.get_logger().info('Target reacquired -> TRACK')
                 self.track_behavior()
                 return
+            if self._search_start_time is not None:
+                elapsed = (self.get_clock().now() - self._search_start_time).nanoseconds / 1e9
+                if elapsed >= self._search_spin_duration:
+                    self.state = SafetyState.PATROL
+                    self._search_start_time = None
+                    self.get_logger().info('Search timeout -> PATROL')
+                    self.publish_cmd(0.0, 0.0)
+                    return
             # Rotate in place looking for the target. Never drive forward
             # in SEARCH -- no valid target is currently detected.
             self.publish_cmd(0.0, self.search_angular_speed)

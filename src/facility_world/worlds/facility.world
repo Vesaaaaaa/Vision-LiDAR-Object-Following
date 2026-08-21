@@ -413,6 +413,11 @@
       <pose>9.0 -6.1 0 0 0 3.14159</pose>
       <uri>model://glass_bin</uri>
     </include>
+    <include>
+      <name>person_walking</name>
+      <pose>7 -5 0 0 0 0</pose>
+      <uri>model://person_walking</uri>
+    </include>
 
     <!-- ============================================================
          STATIC OBSTACLES: cardboard boxes, crates, and misc barriers

@@ -17,7 +17,7 @@ class TargetSelector(Node):
         super().__init__('target_selector')
 
         self.declare_parameter('detections_topic', '/bot_vision/detections')
-        self.declare_parameter('target_class', 'bottle')
+        self.declare_parameter('target_class', 'person')
         self.declare_parameter('selection_mode', 'class_and_proximity')  # class_only | proximity_only | class_and_proximity
         self.declare_parameter('min_confidence', 0.5)
         self.declare_parameter('selected_detection_topic', '/bot_vision/selected_detection')

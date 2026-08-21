@@ -5,6 +5,8 @@ obstacle_avoidance_node:
     input_cmd_vel_topic: "/odom/desired_cmd_vel"
     output_cmd_vel_topic: "/diff_drive_controller/cmd_vel"
     vision_target_detected_topic: "/odom/target_detected"
+    track_loss_debouncer_sec: 0.3
+    reacquire_debouncer_sec: 0.2
     target_detected_timeout: 0.5
     obstacle_distance: 0.6
     clear_distance: 0.6

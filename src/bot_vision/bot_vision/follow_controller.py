@@ -92,7 +92,7 @@ class FollowController(Node):
             bearing = 0.0
 
         linear = linear_gain * distance_error
-        angular = angular_gain * bearing
+        angular = -angular_gain * bearing
 
         linear = max(-max_linear, min(max_linear, linear))
         angular = max(-max_angular, min(max_angular, angular))
