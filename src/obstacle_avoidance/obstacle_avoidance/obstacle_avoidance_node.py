@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import math
+import random
 from enum import Enum
 
 import rclpy
@@ -58,12 +59,12 @@ class ObstacleAvoidanceNode(Node):
         self.declare_parameter('avoid_linear_speed', 0.05)
         self.declare_parameter('avoid_angular_speed', 1.0)
         self.declare_parameter('avoid_clear_ticks', 15)
-        self.declare_parameter('search_angular_speed', 0.4)
+        self.declare_parameter('search_angular_speed', 1.0)
 
         self.declare_parameter('patrol_linear_speed', 0.7)
         self.declare_parameter('patrol_angular_speed', 1.0)
         self.declare_parameter('patrol_turn_interval_sec', 10.0)
-        self.declare_parameter('patrol_turn_duration_sec', 4.0)
+        self.declare_parameter('patrol_turn_duration_sec', 1.0)
 
         self.declare_parameter('control_rate_hz', 20.0)
         self.declare_parameter('cmd_vel_timeout', 0.5)
@@ -122,12 +123,10 @@ class ObstacleAvoidanceNode(Node):
         self.last_target_detected_time = self.get_clock().now()
         self.have_target_msg = False
 
-        # Patrol sweep timing state.
-        now = self.get_clock().now()
-        self.patrol_last_turn_time = now
-        self.patrol_turning = False
-        self.patrol_turn_start_time = now
-
+        # Patrol sweep timing state.  
+        self.patrol_mode = 'FORWARD'
+        self.patrol_mode_start_time = self.get_clock().now()
+        
         # --- Pub/Sub ---
         sensor_qos = QoSProfile(depth=5)
         sensor_qos.reliability = QoSReliabilityPolicy.BEST_EFFORT
@@ -229,7 +228,7 @@ class ObstacleAvoidanceNode(Node):
         # LiDAR safety override: PATROL and TRACK can be pre-empted by
         # AVOID whenever an obstacle appears. AVOID records which
         # behavior it interrupted so it can hand control back later.
-        if self.state in (SafetyState.PATROL, SafetyState.TRACK):
+        if self.state in (SafetyState.PATROL, SafetyState.TRACK, SafetyState.SEARCH):
             if front <= self.obstacle_distance:
                 self.previous_behavior_state = self.state
                 self.state = SafetyState.AVOID
@@ -298,10 +297,7 @@ class ObstacleAvoidanceNode(Node):
 
             if self.avoid_clear_tick_count >= self.avoid_clear_ticks:
                 # Return control to whichever behavior AVOID interrupted.
-                restored = self.previous_behavior_state
-                if restored not in (SafetyState.PATROL, SafetyState.TRACK):
-                    restored = SafetyState.PATROL
-                self.state = restored
+                self.state = self.previous_behavior_state
                 self.avoid_clear_tick_count = 0
                 self.get_logger().info(
                     f'Path clear -> resuming {self.state.name}')
@@ -325,45 +321,38 @@ class ObstacleAvoidanceNode(Node):
             self.last_input_cmd.twist.angular.z)
 
     def patrol_behavior(self):
-        """Cruise-and-sweep patrol. Drives straight, periodically turning
-        in place to sweep the area. Deliberately independent of the
-        vision system."""
+        """Drive straight for a while, then turn left or right randomly."""
         now = self.get_clock().now()
+        elapsed = (now - self.patrol_mode_start_time).nanoseconds/1e9
         
-        if self.patrol_turning:
-            turn_elapsed = (now - self.patrol_turn_start_time).nanoseconds / 1e9
-            if turn_elapsed >= self.patrol_turn_duration_sec:
-                # Turn finished -> switch to forward driving
-                self.patrol_turning = False
-                self.patrol_last_turn_time = now
+        if self.patrol_mode == 'FORWARD':
+            if elapsed >= self.patrol_turn_interval_sec:
+                if random.choice([True, False]):
+                    self.patrol_mode = 'TURN_LEFT'
+                    self.get_logger().info("Patrol: turning left")
+                else:
+                    self.patrol_mode = 'TURN_RIGHT'
+                    self.get_logger().info("Patrol: turning right")
+                self.patrol_mode_start_time = now
+            else:
                 self.publish_cmd(self.patrol_linear_speed, 0.0)
-                return
-            elif turn_elapsed < self.patrol_turn_duration_sec/4:
-                # Turn left for the first fourth
+                
+        elif self.patrol_mode == 'TURN_LEFT':
+            if elapsed >= self.patrol_turn_duration_sec:
+                self.patrol_mode = 'FORWARD'
+                self.patrol_mode_start_time = now
+                self.publish_cmd(self.patrol_linear_speed, 0.0)
+            else:
                 self.publish_cmd(0.0, self.patrol_angular_speed)
-                return
-            elif turn_elapsed < 3*self.patrol_turn_duration_sec/4:
-                # Turn right for the middle half
+                
+        elif self.patrol_mode == 'TURN_RIGHT':
+            if elapsed >= self.patrol_turn_duration_sec:
+                self.patrol_mode = 'FORWARD'
+                self.patrol_mode_start_time = now
+                self.publish_cmd(self.patrol_linear_speed, 0.0)
+            else:
                 self.publish_cmd(0.0, -self.patrol_angular_speed)
-                return
-            else:
-                # Look forward for the last fourth
-                self.publish_cmd(0.0, self.patrol_angular_speed)
-                return
-        
-        else:
-            since_last_turn = (now - self.patrol_last_turn_time).nanoseconds / 1e9
-            if since_last_turn >= self.patrol_turn_interval_sec:
-                # Time to start a new turn
-                self.patrol_turning = True
-                self.patrol_turn_start_time = now
-                self.publish_cmd(0.0, self.patrol_angular_speed)
-                return 
-            else:
-                # Drive forward
-                self.publish_cmd(self.patrol_linear_speed, 0.0)
-                return
-
+                
     # ---------------------------------------------------------------
     def publish_cmd(self, linear_x: float, angular_z: float):
         cmd = TwistStamped()

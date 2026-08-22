@@ -16,10 +16,10 @@ obstacle_avoidance_node:
     avoid_linear_speed: 0.05
     avoid_angular_speed: 1.0
     avoid_clear_ticks: 15
-    search_angular_speed: 0.4
+    search_angular_speed: 1.0
     patrol_linear_speed: 0.7
     patrol_angular_speed: 1.0
     patrol_turn_interval_sec: 10.0
-    patrol_turn_duration_sec: 4.0
+    patrol_turn_duration_sec: 1.0
     control_rate_hz: 20.0
     cmd_vel_timeout: 0.5
