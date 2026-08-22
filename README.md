@@ -7,7 +7,7 @@ Simulation → Top-level bring-up:
 ros2 launch bringup bringup.launch.py
 ```
 This composes the following launch files: `facility_world.launch.py` → `following_bot.launch.py` → `bot_vision.launch.py` → `obstacle_avoidance.launch.py` → RViz2. `use_sim_time` defaults to `true` here and is threaded through to `following_bot`, `bot_vision`, and `obstacle_avoidance` via `launch_arguments`.
-If you wish to launch the packages one by one, use the individual commands shown above.
+If you wish to launch the packages one by one, use the individual commands shown above. (example: ros2 launch facility_world facility_world.launch.py)
 
 `bot_vision.launch.py` and `obstacle_avoidance.launch.py` default `use_sim_time` to `false` when run standalone — only `bringup.launch.py` flips it to `true`, so running vision/avoidance nodes in isolation against a sim clock requires passing `use_sim_time:=true` explicitly.
 
@@ -15,7 +15,7 @@ If you wish to launch the packages one by one, use the individual commands shown
 
 `facility_world.launch.py` sets `GZ_SIM_RESOURCE_PATH` to the package's `models` directory so the custom SDF models (bins, bottles, can, shelf) resolve, and launches `gz sim -r` directly on `worlds/facility.world` rather than through `ros_gz_sim`'s gz_sim launch wrapper.
 
-Keyboard Teleop: ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r cmd_vel:=/diff_drive_controller/cmd_vel -p stamped:=true
+Keyboard Teleop: `ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r cmd_vel:=/diff_drive_controller/cmd_vel -p stamped:=true`
 
 
 ## Vision pipeline (bot_vision)
