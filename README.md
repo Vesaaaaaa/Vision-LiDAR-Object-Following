@@ -39,3 +39,72 @@ Four nodes launched together by `bot_vision.launch.py`, all sharing `config/bot_
 ```
 
 `yolo_detector`'s `model_path` is set to the bare filename `"yolov8n.pt"` btw — not a package share path; if it silently fails to load a model, check where the node was launched from.
+
+## Obstacle Avoidance State Machine (obstacle_avoidance)
+
+This node implements a reactive safety layer using a simple state machine. The robot has four main "moods" that determine how it behaves in response to its vision system and LiDAR sensor.
+
+---
+
+### The Four States
+
+#### PATROL – “Explore on my own”
+**Default behavior when no target is known.**
+
+- The robot drives forward, occasionally turning left or right at random.
+- It does not rely on the vision system for motion.
+- It keeps patrolling until the vision system reports a valid target.
+
+---
+
+#### TRACK – “Follow the object”
+**Activated when a valid target is detected.**
+
+- The robot stops making its own decisions.
+- It simply forwards the speed.
+- **Safety rule:** It will only move if the target is still confirmed **and** the upstream commands are fresh. Otherwise, it stays still.
+
+---
+
+#### SEARCH – “I lost it - look around”
+**Triggered when TRACK loses the target.**
+
+- The robot spins in place (rotates) to try and re‑acquire the target.
+- It never drives forward in this state because no target is currently confirmed.
+- **Two possible exits:**
+  - **Target found** → go back to TRACK.
+  - **Search times out** → give up and return to PATROL.
+
+---
+
+#### AVOID – “Danger - get out of the way!”
+**Emergency override that interrupts any other state.**
+
+- If the front LiDAR detects an obstacle too close, AVOID instantly takes over.
+- The robot stops driving forward and turns away from the obstacle (choosing the side with more open space).
+- It remembers which state it interrupted (PATROL, TRACK, but not SEARCH).
+- Once the front path is clear for a short moment, it hands control back to that previous state and resumes what it was doing.
+
+---
+
+### The Ultimate Safety Net
+
+#### Emergency Stop
+- If an obstacle gets **extremely** close (within a very short distance), the robot slams the brakes immediately.
+- This overrides **everything**, including the AVOID state, to prevent a collision at all costs.
+
+---
+
+### How They Flow Together (The Big Picture)
+
+| Starting State | Event | Next State |
+| :--- | :--- | :--- |
+| PATROL | Vision detects a target | TRACK |
+| TRACK | Vision loses the target | SEARCH |
+| SEARCH | Target re‑acquired | TRACK |
+| SEARCH | Search timeout | PATROL |
+| *Any state* | Obstacle appears too close | AVOID |
+| AVOID | Path is clear for a while | *Previous state (PATROL/TRACK)* |
+| *Any state* | Obstacle is dangerously close | *Emergency Stop (zero speed)* |
+
+---

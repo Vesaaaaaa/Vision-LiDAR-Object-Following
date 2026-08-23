@@ -230,7 +230,10 @@ class ObstacleAvoidanceNode(Node):
         # behavior it interrupted so it can hand control back later.
         if self.state in (SafetyState.PATROL, SafetyState.TRACK, SafetyState.SEARCH):
             if front <= self.obstacle_distance:
-                self.previous_behavior_state = self.state
+                self.restore = self.state
+                if self.restore not in (SafetyState.PATROL, SafetyState.TRACK):
+                    self.restore = self.SafetyState.PATROL
+                self.previous_behavior_state = self.restore
                 self.state = SafetyState.AVOID
                 self.turn_direction = 1.0 if left >= right else -1.0
                 self.avoid_clear_tick_count = 0
