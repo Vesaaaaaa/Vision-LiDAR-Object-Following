@@ -49,7 +49,6 @@ This node implements a reactive safety layer using a simple state machine. The r
 ### The Four States
 
 #### PATROL – “Explore on my own”
-**Default behavior when no target is known.**
 
 - The robot drives forward, occasionally turning left or right at random.
 - It does not rely on the vision system for motion.
@@ -58,7 +57,6 @@ This node implements a reactive safety layer using a simple state machine. The r
 ---
 
 #### TRACK – “Follow the object”
-**Activated when a valid target is detected.**
 
 - The robot stops making its own decisions.
 - It simply forwards the speed.
@@ -67,7 +65,6 @@ This node implements a reactive safety layer using a simple state machine. The r
 ---
 
 #### SEARCH – “I lost it - look around”
-**Triggered when TRACK loses the target.**
 
 - The robot spins in place (rotates) to try and re‑acquire the target.
 - It never drives forward in this state because no target is currently confirmed.
@@ -78,7 +75,6 @@ This node implements a reactive safety layer using a simple state machine. The r
 ---
 
 #### AVOID – “Danger - get out of the way!”
-**Emergency override that interrupts any other state.**
 
 - If the front LiDAR detects an obstacle too close, AVOID instantly takes over.
 - The robot stops driving forward and turns away from the obstacle (choosing the side with more open space).
