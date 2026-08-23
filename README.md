@@ -1,5 +1,6 @@
 # Vision LiDAR Object Following - Gazebo & ROS2 (All from scratch)
 , except for the human model :p
+---
 Demo Video (click it):
 [![Watch the video](https://img.youtube.com/vi/uNYvJtAvjr0/maxresdefault.jpg)](https://youtu.be/uNYvJtAvjr0)
 
