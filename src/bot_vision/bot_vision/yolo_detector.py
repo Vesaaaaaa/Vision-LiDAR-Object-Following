@@ -1,5 +1,3 @@
-#!/home/vesaaaaaa/yolo_env/bin/python3
-
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSHistoryPolicy
@@ -7,26 +5,7 @@ from sensor_msgs.msg import Image
 from std_msgs.msg import String
 from vision_msgs.msg import Detection2DArray, Detection2D, ObjectHypothesisWithPose
 from cv_bridge import CvBridge
-
-import sys
-
-# The installed console_scripts entry point always runs under system
-# Python (colcon itself is pinned to /usr/bin/python3), so activating a
-# virtual environment before building has no effect on the generated
-# executable's interpreter. Instead, make ultralytics importable by
-# adding the venv's site-packages directory to sys.path at runtime.
-_YOLO_VENV_SITE_PACKAGES = '/home/vesaaaaaa/yolo_env/lib/python3.12/site-packages'
-if _YOLO_VENV_SITE_PACKAGES in sys.path:
-    sys.path.remove(_YOLO_VENV_SITE_PACKAGES)
-# Insert at the front so the venv's own filelock/torch/numpy versions take
-# precedence over an older copy that ROS or /usr/lib/python3/dist-packages
-# may have already placed earlier on sys.path.
-sys.path.insert(0, _YOLO_VENV_SITE_PACKAGES)
-
-try:
-    from ultralytics import YOLO
-except ImportError:
-    YOLO = None
+from ultralytics import YOLO
 
 
 class YoloDetectorNode(Node):
@@ -51,7 +30,7 @@ class YoloDetectorNode(Node):
 
         self.bridge = CvBridge()
         self.model = None
-        if YOLO is not None:
+        if YOLO is not None: # Debugging purposes
             try:
                 self.model = YOLO(self.model_path)
                 self.get_logger().info(f'YOLO model "{self.model_path}" loaded successfully from venv site-packages')
@@ -60,7 +39,6 @@ class YoloDetectorNode(Node):
         else:
             self.get_logger().warn('ultralytics/yolo_v8 not available; detector will publish empty results')
 
-        self.get_logger().info(f"Using Python: {sys.executable}")
         
         sensor_qos = QoSProfile(
             reliability=QoSReliabilityPolicy.BEST_EFFORT,
